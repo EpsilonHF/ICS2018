@@ -12,6 +12,7 @@ int main(int argc, char *argv[]) {
 	uint32_t result;
 	char buf[65536];
 	while (scanf("%u %s", &result, buf) != EOF) {
+		printf("intput: \n");
 		bool equ = false;
 		uint32_t res = expr(buf, &success);
 		equ = res == result;
