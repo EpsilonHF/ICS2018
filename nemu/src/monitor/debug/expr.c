@@ -170,6 +170,7 @@ static int dominant(int l, int r) {
 			count--;
 		if (count > 0)
 			continue;
+		printf("%c ", tokens[i].type);
 		if (tokens[i].type == '+' || tokens[i].type == '-' || \
 			tokens[i].type == '*' || tokens[i].type == '/') {
 			if (tokens[i].priority <= pri) {
