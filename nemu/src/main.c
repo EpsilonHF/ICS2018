@@ -20,7 +20,7 @@ int main(int argc, char *argv[]) {
 			printf("%d %u %u %s\n", equ, res, result, buf);
 		} 
 		else {
-			printf("%u %s\n", result, buf);
+			printf("result:%u  buf:%s\n", result, buf);
 			printf("P Error\n");
 		}
 	}
