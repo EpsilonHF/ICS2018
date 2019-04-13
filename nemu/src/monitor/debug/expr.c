@@ -175,7 +175,7 @@ static int dominant(int l, int r) {
 			}
 		}
 	}
-	//printf("location: %d %d %d\n", l, r, op);	
+	printf("location: %d %d %d\n", l, r, op);	
 	return op;
 }
 
@@ -213,8 +213,8 @@ static uint32_t eval(int l, int r, bool *success) {
 		int op = dominant(l, r);
 		//if (token[i].type == TK_NEG)
 		//	return -eval(l + 1, r, *success);
-		int val1 = eval(l, op - 1, success);
-		int val2 = eval(op + 1, r, success);
+		uint32_t val1 = eval(l, op - 1, success);
+		uint32_t val2 = eval(op + 1, r, success);
 		
 		switch(tokens[op].type) {
 			case '+' : return val1 + val2;
