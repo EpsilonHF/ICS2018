@@ -206,7 +206,7 @@ static uint32_t eval(int l, int r, bool *success) {
 	}
 
 	else if (check_parentheses(l, r) == true) {
-		return eval(l - 1, r + 1, success);
+		return eval(l + 1, r - 1, success);
 	}
 
 	else {
