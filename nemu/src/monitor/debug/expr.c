@@ -121,7 +121,6 @@ static bool make_token(char *e) {
 						tokens[nr_token].type = rules[i].token_type;
 						tokens[nr_token].priority = rules[i].priority;
 						nr_token++;
-						break;
 				}
 				break;
 			}
