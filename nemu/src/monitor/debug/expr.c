@@ -178,7 +178,7 @@ static int dominant(int l, int r) {
 			}
 		}
 	}
-	printf("%d %d %d\n", l, r, op);	
+	printf("location: %d %d %d\n", l, r, op);	
 	return op;
 }
 
