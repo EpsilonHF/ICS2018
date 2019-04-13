@@ -28,7 +28,6 @@ static struct rule {
 	{"!=", TK_NEQ, 3},				// not epual
     {"&&", TK_AND, 2},				// and
 	{"\\|\\|", TK_OR, 1},			// or
-	{"!", '!', 6},					// not
 	{"-", '-', 4},					// minus
 	{">", '>', 3},					// greater
 	{">=", TK_GE, 3},				// greater or equal
@@ -70,7 +69,7 @@ typedef struct token {
 	int priority;
 } Token;
 
-Token tokens[32];
+Token tokens[1000];
 int nr_token;
 
 static bool make_token(char *e) {
@@ -176,7 +175,7 @@ static int dominant(int l, int r) {
 			}
 		}
 	}
-	printf("location: %d %d %d\n", l, r, op);	
+	//printf("location: %d %d %d\n", l, r, op);	
 	return op;
 }
 
@@ -217,20 +216,25 @@ static uint32_t eval(int l, int r, bool *success) {
 		int val2 = eval(op + 1, r, success);
 		
 		switch(tokens[op].type) {
-			case '+' : 
-				return val1 + val2;
-			case '-' :
-				return val1 - val2;
-			case '*' :
-				return val1 * val2;
+			case '+' : return val1 + val2;
+			case '-' : return val1 - val2;
+			case '*' : return val1 * val2;
 			case '/' :
 				if (val2 == 0) {
 					*success = false;
 					return -1;
 				}
 				return val1 / val2;
-			default:
-				return -1;
+			case TK_EQ: return val1 == val2;
+			case TK_AND: return val1 && val2;
+			case TK_NEQ: return val1 != val2;
+			case TK_OR: return val1 || val2;
+			case '<': return val1 < val2;
+			case '>': return val1 > val2;
+			case TK_GE: return val1 >= val2;
+			case TK_LE: return val1 <= val2;
+		
+			default: return -1;
 		}
 	}
 
