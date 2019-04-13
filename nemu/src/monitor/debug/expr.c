@@ -178,7 +178,7 @@ static int dominant(int l, int r) {
 			}
 		}
 	}
-
+	printf("%d\n", op);
 	return op;
 }
 
@@ -189,6 +189,7 @@ static uint32_t eval(int l, int r, bool *success) {
 
 	if (l > r) {
 		Assert(l > r, "Wrong expression\n");
+		*success = false;
 		return -1;
 	}
 
@@ -225,9 +226,12 @@ static uint32_t eval(int l, int r, bool *success) {
 			case '*' :
 				return val1 * val2;
 			case '/' :
+				if (val2 == 0) {
+					*success = false;
+					return -1;
+				}
 				return val1 / val2;
 			default:
-				*success = false;
 				return -1;
 		}
 	}
