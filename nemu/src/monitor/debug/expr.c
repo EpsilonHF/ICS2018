@@ -187,6 +187,7 @@ static uint32_t eval(int l, int r, bool *success) {
 	if (l > r) {
 		Assert(l > r, "Wrong expression\n");
 		*success = false;
+		printf("Wrong!\n");
 		return -1;
 	}
 
@@ -222,6 +223,7 @@ static uint32_t eval(int l, int r, bool *success) {
 			case '/' :
 				if (val2 == 0) {
 					*success = false;
+					printf("Wrong!\n");
 					return -1;
 				}
 				return val1 / val2;
