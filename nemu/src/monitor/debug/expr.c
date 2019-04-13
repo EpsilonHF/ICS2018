@@ -159,7 +159,7 @@ static uint32_t read_reg(char *addr) {
 // find dominant operator in experssion
 static int dominant(int l, int r) {
 	
-	int op = l, pri = 8, count = 0;
+	int op = l, pri = 6, count = 0;
 	for (int i = l; i <= r; i++) {
 		if (tokens[i].type == '(') 
 			count++;
@@ -167,12 +167,9 @@ static int dominant(int l, int r) {
 			count--;
 		if (count > 0)
 			continue;
-		if (tokens[i].type == '+' || tokens[i].type == '-' || \
-			tokens[i].type == '*' || tokens[i].type == '/') {
-			if (tokens[i].priority <= pri) {
-				op = i;
-				pri = tokens[i].priority;
-			}
+		if (tokens[i].priority <= pri && tokens[i].priority > 0) {
+			op = i;
+			pri = tokens[i].priority;			
 		}
 	}
 	printf("location: %d %d %d\n", l, r, op);	
