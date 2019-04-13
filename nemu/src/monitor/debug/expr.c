@@ -187,7 +187,7 @@ static uint32_t eval(int l, int r, bool *success) {
 	if (l > r) {
 		Assert(l > r, "Wrong expression\n");
 		*success = false;
-		printf("Wrong!\n");
+		printf("Wrong 1!\n");
 		return -1;
 	}
 
