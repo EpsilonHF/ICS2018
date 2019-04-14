@@ -1,5 +1,5 @@
 #include <stdio.h>
-#include "../include/monitor/expr.h"
+#include "monitor/expr.h"
 
 int init_monitor(int, char *[]);
 void ui_mainloop(int);
