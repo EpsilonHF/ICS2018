@@ -27,6 +27,7 @@ static struct rule {
 	{"==", TK_EQ, 3},				// equal
 	{"!=", TK_NEQ, 3},				// not epual
     {"&&", TK_AND, 2},				// and
+	{"!", '!', 6},                  // not
 	{"\\|\\|", TK_OR, 1},			// or
 	{"-", '-', 4},					// minus
 	{">", '>', 3},					// greater
@@ -152,8 +153,31 @@ static bool check_parentheses(int l, int r) {
 }
 
 // load data in register
-static uint32_t read_reg(char *addr) {
-	return 0;
+static uint32_t read_reg(char *name, bool *success) {
+	int len = 4;
+
+	if (strlen(name) == 2) {
+		if (name[1] == 'H' || name[1] == 'L')
+			len = 1;
+		else
+			len = 2;
+	}
+
+	for (int i = R_EAX; i <= R_EDI; i ++) {
+		if (strcmp(name, reg_name(i, len)) == 0) {
+			switch(len) {
+				case 4: return reg_l(i); 
+				case 2: return reg_w(i); 
+				case 1: return reg_b(i);
+			}
+		}
+	}
+
+	if (strcmp(name, "eip") == 0 || strcmp(name, "EIP") == 0)
+		return cpu.eip;
+	
+	*success = false;
+	return -1;
 }
 
 // find dominant operator in experssion
@@ -198,7 +222,7 @@ static uint32_t eval(int l, int r, bool *success) {
 				sscanf(tokens[l].str, "%x", &num);
 				return num;
 			case TK_REG:
-				return read_reg(tokens[l].str);
+				return read_reg(tokens[l].str, success);
 		}
 	}
 
@@ -208,8 +232,16 @@ static uint32_t eval(int l, int r, bool *success) {
 
 	else {
 		int op = dominant(l, r);
-		//if (token[i].type == TK_NEG)
-		//	return -eval(l + 1, r, *success);
+
+		if (tokens[op].type == '!')
+			return !eval(op + 1, r, success);
+		else if (tokens[op].type == TK_POINTER) {
+			uint32_t addr = eval(op + 1, r, success);
+			return vaddr_read(addr, 4);
+		}
+		else if (tokens[op].type == TK_NEG) 
+			return -eval(op + 1, r, success);
+
 		uint32_t val1 = eval(l, op - 1, success);
 		uint32_t val2 = eval(op + 1, r, success);
 		
@@ -220,7 +252,6 @@ static uint32_t eval(int l, int r, bool *success) {
 			case '/' :
 				if (val2 == 0) {
 					*success = false;
-					printf("Wrong!\n");
 					return -1;
 				}
 				return val1 / val2;
@@ -249,9 +280,27 @@ uint32_t expr(char *e, bool *success) {
 	/* check poniter and negative number */
 	for (int i = 0; i < nr_token; i++) {
 
-		if (tokens[i].type == '-' && (i == 0 || tokens[i-1].type == '+' || \
-			tokens[i-1].type == '(' || tokens[i-1].type == '-')) {
+		if (i == 0) {
+			if (tokens[i].type == '-') {
+				tokens[i].type = TK_NEG;
+				tokens[i].priority = 6;
+			}
+			else if (tokens[i].type == '*') {
+				tokens[i].type = TK_POINTER;
+				tokens[i].priority = 6;
+			}
+			continue;
+		}
+
+		int type = tokens[i-1].type;
+		if (tokens[i].type == '-' && type != TK_DEC && type != TK_HEX && \
+		    type != TK_REG && type != ')') {
 			tokens[i].type = TK_NEG;
+			tokens[i].priority = 6;
+		}
+		else if (tokens[i].type == '*' && type != TK_DEC && type != TK_HEX && \
+				 type != TK_REG && type != ')') {
+			tokens[i].type = TK_POINTER;
 			tokens[i].priority = 6;
 		}
 	}
