@@ -36,6 +36,30 @@ static int cmd_q(char *args) {
   return -1;
 }
 
+static int cmd_p(char *args) {
+	if (args == NULL) {
+		printf("Please input a valid expression.\n");
+		return 0;
+	}
+	bool success;
+	int result = expr(args, &success);
+	if (!success)
+		printf("Illegal expression.\n");
+	else
+		printf("%#x\n", result);
+	return 0;
+}
+
+static int cmd_w(char *args) {
+	new_wp(args);
+	return 0;
+}
+
+static int cmd_d(char *args) {
+
+	return 0;
+}
+
 static int cmd_help(char *args);
 
 static struct {
@@ -48,6 +72,9 @@ static struct {
   { "q", "Exit NEMU", cmd_q },
 
   /* TODO: Add more commands */
+  { "p", "Calculate the expression", cmd_p },
+  { "w", "Set new watchpoint", cmd_w },
+  { "d", "Delete nth watchpoint", cmd_d },
 
 };
 

@@ -20,18 +20,43 @@ void init_wp_pool() {
 
 /* TODO: Implement the functionality of watchpoint */
 
-WP* new_wp() {
+WP* new_wp(char *args) {
 	if (free_ == NULL) {
 		printf("No Free WatchPointer!\n");
 		return NULL;
 	}
+	if (args == NULL) {
+		printf("Please Input Valid Expression!\n");
+		return NULL;
+	}
+
 	WP *ptr = free_;
 	free_ = free_->next;
 
 	ptr->next = head;
 	head = ptr;
+	strcpy(head->exp,args);
+
+	bool success;
+	int val = expr(args, &success);
+	if (!success) {
+		printf("Invalid Expression.\n");
+		return NULL;
+	}
+	
+	head->val = val;
 
 	return head;
+}
+
+
+int del_wp(int n) {
+	if (n >= 0 && n < NR_WP) {
+		int result = free_wp(&wp_pool[n]);
+		return result;
+	}
+	else
+		return 1;
 }
 
 
