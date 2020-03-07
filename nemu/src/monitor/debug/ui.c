@@ -103,7 +103,7 @@ static int cmd_w(char *args) {
 
 static int cmd_d(char *args) {
   if (args == NULL) {
-    printf("Please input number of watchpoint.\n")
+    printf("Please input number of watchpoint.\n");
     return 0;
   }
 	int n = atoi(args);
@@ -123,10 +123,10 @@ static struct {
   { "q", "Exit NEMU", cmd_q },
 
   /* TODO: Add more commands */
-  { "si", "Execute i steps", cmd_si }
-  { "info", "Print regesters or watchpoint information", cmd_info }
+  { "si", "Execute i steps", cmd_si },
+  { "info", "Print regesters or watchpoint information", cmd_info },
   { "p", "Calculate the expression", cmd_p },
-  { "x", "scan memory", cmd_x }
+  { "x", "scan memory", cmd_x },
   { "w", "Set new watchpoint", cmd_w },
   { "d", "Delete nth watchpoint", cmd_d },
 
