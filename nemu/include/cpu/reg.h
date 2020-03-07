@@ -28,10 +28,11 @@ typedef struct {
    * in PA2 able to directly access these registers.
    */
 		struct {
+      // uint32_t
 			rtlreg_t eax, ecx, edx, ebx, esp, ebp, esi, edi;
 		};
 	};
-
+  // uint32_t
   vaddr_t eip;
 
 } CPU_state;
@@ -43,8 +44,11 @@ static inline int check_reg_index(int index) {
   return index;
 }
 
+// get long word
 #define reg_l(index) (cpu.gpr[check_reg_index(index)]._32)
+// get word
 #define reg_w(index) (cpu.gpr[check_reg_index(index)]._16)
+// get L and H
 #define reg_b(index) (cpu.gpr[check_reg_index(index) & 0x3]._8[index >> 2])
 
 extern const char* regsl[];

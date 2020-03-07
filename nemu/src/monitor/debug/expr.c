@@ -43,6 +43,7 @@ static struct rule {
 	{"\\$(eax|EAX|ebx|EBX|ecx|ECX|edx|EDX|ebp|EBP|esp|ESP|esi|ESI|edi|EDI|eip|EIP)", TK_REG, 0},  // register
 };
 
+// number of rules
 #define NR_REGEX (sizeof(rules) / sizeof(rules[0]) )
 
 static regex_t re[NR_REGEX];
@@ -55,8 +56,10 @@ void init_regex() {
 	char error_msg[128];
 	int ret;
 
+	// compile all rules
 	for (i = 0; i < NR_REGEX; i ++) {
 		ret = regcomp(&re[i], rules[i].regex, REG_EXTENDED);
+		// exists error in rules
 		if (ret != 0) {
 			regerror(ret, &re[i], error_msg, 128);
 			panic("regex compilation failed: %s\n%s", error_msg, rules[i].regex);
@@ -77,12 +80,13 @@ static bool make_token(char *e) {
 	int position = 0;
 	int i;
 	regmatch_t pmatch;
-
+	// position of token
 	nr_token = 0;
 
 	while (e[position] != '\0') {
     /* Try all rules one by one. */
 		for (i = 0; i < NR_REGEX; i ++) {
+			// if rule matches
 			if (regexec(&re[i], e + position, 1, &pmatch, 0) == 0 && pmatch.rm_so == 0) {
 				char *substr_start = e + position;
 				int substr_len = pmatch.rm_eo;
@@ -102,6 +106,7 @@ static bool make_token(char *e) {
 
 					case TK_REG:
 						tokens[nr_token].type = rules[i].token_type;
+						// copy string to token
 						strncpy(tokens[nr_token].str, substr_start+1, substr_len-1);
 						tokens[nr_token].str[substr_len-1] = '\0';
 						tokens[nr_token].priority = rules[i].priority;
@@ -271,6 +276,7 @@ static uint32_t eval(int l, int r, bool *success) {
 	return 0;
 }
 
+// calculate expression
 uint32_t expr(char *e, bool *success) {
 	if (!make_token(e)) {
 		*success = false;

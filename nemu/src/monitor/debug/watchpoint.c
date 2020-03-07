@@ -114,7 +114,8 @@ int check_watchpoints() {
 }
 
 
-int print_watchpoints(WP *ptr) {
+int print_watchpoints() {
+	WP *ptr = head; 
 	if (ptr == NULL) {
 		printf("No watchpoint!\n");
 		return 1;

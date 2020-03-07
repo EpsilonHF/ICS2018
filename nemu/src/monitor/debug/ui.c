@@ -36,6 +36,48 @@ static int cmd_q(char *args) {
   return -1;
 }
 
+// execute n step command
+static int cmd_si(char *args) {
+  if (args == NULL) {
+    cpu_exec(1);
+  }
+  else {
+    int steps = atoi(args);
+    cpu_exec(steps);
+  }
+  return 0;
+}
+
+// print regex or watochpoint information
+static int cmd_info(char *args) {
+  if (args == NULL) {
+    printf("Please input r or w.\n");
+    return 0;
+  }
+  else {
+    if (strcmp(args, "r") == 0) {
+      printf("eax 0x%x %d\n", reg_l(R_EAX), reg_l(R_EAX));
+      printf("edx 0x%x %d\n", reg_l(R_EDX), reg_l(R_EDX));
+      printf("ecx 0x%x %d\n", reg_l(R_ECX), reg_l(R_ECX));
+      printf("ebx 0x%x %d\n", reg_l(R_EBX), reg_l(R_EBX));
+      printf("ebp 0x%x %d\n", reg_l(R_EBP), reg_l(R_EBP));
+      printf("esi 0x%x %d\n", reg_l(R_ESI), reg_l(R_ESI));
+      printf("edi 0x%x %d\n", reg_l(R_EDI), reg_l(R_EDI));
+      printf("esp 0x%x %d\n", reg_l(R_ESP), reg_l(R_ESP));
+      printf("eip 0x%x %d\n", cpu.eip, cpu.eip);
+      return 0;
+    }
+    else if (strcmp(args, "w") == 0) {
+      print_watchpoints();
+      return 0;
+    }
+    else {
+      printf("Please input valid command.\n");
+      return 0;
+    }
+  }
+}
+
 static int cmd_p(char *args) {
 	if (args == NULL) {
 		printf("Please input a valid expression.\n");
@@ -50,14 +92,23 @@ static int cmd_p(char *args) {
 	return 0;
 }
 
+static int cmd_x(char *args) {
+  return 0;
+}
+
 static int cmd_w(char *args) {
 	new_wp(args);
 	return 0;
 }
 
 static int cmd_d(char *args) {
-
-	return 0;
+  if (args == NULL) {
+    printf("Please input number of watchpoint.\n")
+    return 0;
+  }
+	int n = atoi(args);
+  del_wp(n);
+  return 0;
 }
 
 static int cmd_help(char *args);
@@ -72,7 +123,10 @@ static struct {
   { "q", "Exit NEMU", cmd_q },
 
   /* TODO: Add more commands */
+  { "si", "Execute i steps", cmd_si }
+  { "info", "Print regesters or watchpoint information", cmd_info }
   { "p", "Calculate the expression", cmd_p },
+  { "x", "scan memory", cmd_x }
   { "w", "Set new watchpoint", cmd_w },
   { "d", "Delete nth watchpoint", cmd_d },
 
