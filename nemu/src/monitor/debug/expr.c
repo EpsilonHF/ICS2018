@@ -201,7 +201,7 @@ static int dominant(int l, int r) {
 			pri = tokens[i].priority;			
 		}
 	}
-	printf("location: %d %d %d\n", l, r, op);	
+	// printf("location: %d %d %d\n", l, r, op);	
 	return op;
 }
 
