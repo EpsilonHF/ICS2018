@@ -38,11 +38,12 @@ static int cmd_q(char *args) {
 
 // execute n step command
 static int cmd_si(char *args) {
-  if (args == NULL) {
+  char *arg = strtok(NULL, " ");
+  if (arg == NULL) {
     cpu_exec(1);
   }
   else {
-    int steps = atoi(args);
+    int steps = atoi(arg);
     cpu_exec(steps);
   }
   return 0;
@@ -93,20 +94,41 @@ static int cmd_p(char *args) {
 }
 
 static int cmd_x(char *args) {
+  char *arg = strtok(NULL, " ");
+  char *exp = strtok(NULL, "");
+  if (arg == NULL || exp == NULL) {
+    printf("Please input valid command.\n");
+	return 0;
+  }
+  bool success;
+  paddr_t addr = expr(exp, &success);
+  if (!success) {
+    printf("Illegal expression.\n");
+	return 0;
+  }
+  int n = atoi(arg);
+  for (int i = 0; i < n; i++) {
+    int cxt = paddr_read(addr, 1);
+	printf("%02x ", cxt);
+	addr++;
+  }
+  printf("\n");
+
   return 0;
 }
 
 static int cmd_w(char *args) {
-	new_wp(args);
-	return 0;
+  new_wp(args);
+  return 0;
 }
 
 static int cmd_d(char *args) {
-  if (args == NULL) {
+  char *arg = strtok(NULL, " ");
+  if (arg == NULL) {
     printf("Please input number of watchpoint.\n");
     return 0;
   }
-	int n = atoi(args);
+  int n = atoi(arg);
   del_wp(n);
   return 0;
 }
