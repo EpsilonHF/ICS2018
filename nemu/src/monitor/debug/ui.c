@@ -80,22 +80,22 @@ static int cmd_info(char *args) {
 }
 
 static int cmd_p(char *args) {
-	if (args == NULL) {
-		printf("Please input a valid expression.\n");
-		return 0;
-	}
-	bool success;
-	int result = expr(args, &success);
-	if (!success)
-		printf("Illegal expression.\n");
-	else
-		printf("%#x\n", result);
+  if (args == NULL) {
+    printf("Please input a valid expression.\n");
 	return 0;
+  }
+  bool success;
+  int result = expr(args, &success);
+  if (!success)
+    printf("Illegal expression.\n");
+  else
+    printf("%#x\n", result);
+  return 0;
 }
 
 static int cmd_x(char *args) {
   char *arg = strtok(NULL, " ");
-  char *exp = strtok(NULL, "");
+  char *exp = args + strlen(arg) + 1;
   if (arg == NULL || exp == NULL) {
     printf("Please input valid command.\n");
 	return 0;
@@ -208,6 +208,7 @@ void ui_mainloop(int is_batch_mode) {
     int i;
     for (i = 0; i < NR_CMD; i ++) {
       if (strcmp(cmd, cmd_table[i].name) == 0) {
+		// execute command
         if (cmd_table[i].handler(args) < 0) { return; }
         break;
       }
